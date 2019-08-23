@@ -1,0 +1,9 @@
+﻿1. DB설치(눈에 보이는 비밀번호 설정은 전부 1234로) -> https://www.oracle.com/database/technologies/112010-win64soft.html
+2. SQL개발자툴 설치 -> https://www.oracle.com/tools/downloads/sqldev-v192-downloads.html
+3. 명령프롬프트 -> sqlplus 엔터 -> 계정:system - > 비번:1234 -> conn /as sysdba 엔터 -> alter user hr account unlock 엔터 -> alter user hr identified by hr 엔터
+4. SQL개발자 툴 접속 -> 왼쪽 녹색 십자가 클릭(접속창 열림) -> 이름 : hr, 사용자이름 : hr, 비밀번호 :hr, ********SID : orcl (아마 xe로 되있음. 꼭 orcl바꿔야함)
+5. 접속 잘 됬으면 -> 테이블(폴더모양) 클릭 -> 다시 오른쪽 클릭 -> 데이터 임포트 -> 찾아보기 클릭 -> PROBLEM.csv (같은폴더에있음) -> 다음클릭 -> 테이블 이름 : PROBLEM -> 다음 -> 다음 -> 스톱 -> ********소스 데이터 열에서 CONTENT부터 STATE까지 한번씩 클릭해서 오른쪽에 있는 "크키/전체 자릿수"를 한 500으로 바꿔줘야함 -> 완료
+6. 이클립스 실행 -> src에 com 폴더 들어가기 -> MainService.java 들어가기 -> 컨트롤 + F11
+기타. 뷰는 main.jsp에 몰빵해서 비동기 ajax처리중
+주의사항. ****** 별표 되있는건 꼭 주의해야함
+특히! CSV파일로 DB테이블 임포트할때 오류나면 100프로 ****를 부분에서 틀린거임.
