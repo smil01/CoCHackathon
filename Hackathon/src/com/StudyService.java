@@ -12,6 +12,8 @@ import com.google.gson.JsonObject;
 import com.oreilly.servlet.MultipartRequest;
 import com.oreilly.servlet.multipart.DefaultFileRenamePolicy;
 
+import Util.AI_Classification_Server_To;
+
 @WebServlet("/StudyService")
 public class StudyService extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -34,12 +36,12 @@ public class StudyService extends HttpServlet {
 			
 		} else {
 			///////////////////////////////딥러닝자리///////////////////////////////////
-			map.addProperty("content", "1");
+			map.addProperty("content", AI_Classification_Server_To.getClassification(fileName));
 			////////////////////////////////////////////////////////////////////////
 			map.addProperty("writer", "오대근");
 			map.addProperty("src", "./upload/" + fileName);
 		}
-		System.out.println(map);
+		System.out.println("restAPI 작동 결과 : " + map);
 		response.getWriter().println(map);
 	}
 

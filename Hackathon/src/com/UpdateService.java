@@ -7,6 +7,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import Util.AI_ReStudy_Server_To;
+
 /**
  * Servlet implementation class UpdateService
  */
@@ -25,10 +27,12 @@ public class UpdateService extends HttpServlet {
 		String gps = request.getParameter("modal_gps");
 		String addr = request.getParameter("modal_addr");
 		String time = request.getParameter("modal_time");
+		String src = request.getParameter("modal_src");
 
 		if(ProblemDAO.getDao().update(new ProblemDTO(num, content, writer, gps, addr, time, state))) {
 			if(state == 2) {
 				//////////////////딥러닝 재학습부///////////////////
+				AI_ReStudy_Server_To.setReStudy(src.replace("./upload/", ""));
 			}
 			
 			request.getSession().setAttribute("msg", "접수번호 "+ num + "의 처리가 완료되었습니다.");
