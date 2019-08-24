@@ -16,7 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 public class MainService extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	
-	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {		
 		RequestDispatcher dispatcher = request.getRequestDispatcher("main.jsp");
 		request.setAttribute("list", ProblemDAO.getDao().selectAll());
 		dispatcher.forward(request, response);

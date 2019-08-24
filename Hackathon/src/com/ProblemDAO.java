@@ -1,12 +1,10 @@
 package com;
 
-import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
-import java.util.Properties;
 
 public class ProblemDAO {
 	private Connection conn;
@@ -106,41 +104,22 @@ public class ProblemDAO {
 
 		return list;
 	}
-
-	public ProblemDTO select(int num) {
-		try {
-			getCon();
-
-			String sql = "SELECT * FROM problem WHERE num = ? ORDER BY num DESC";
-
-			pst = conn.prepareStatement(sql);
-			pst.setInt(1, num);
-
-			rs = pst.executeQuery();
-
-			if (rs.next()) {
-				return new ProblemDTO(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5),
-						rs.getString(6), rs.getString(7), rs.getString(8), rs.getInt(9));
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			close();
-		}
-
-		return null;
-	}
 	
-	public boolean update(int num, int state) {
+	public boolean update(ProblemDTO dto) {
 		try {
 			getCon();
 
-			String sql = "UPDATE problem SET state = ? WHERE num = ?";
+			String sql = "UPDATE problem SET content = ?, writer = ?, gps = ?, addr = ?, time = ?, state = ? WHERE num = ?";
 
 			pst = conn.prepareStatement(sql);
 
-			pst.setInt(1, state);
-			pst.setInt(2, num);
+			pst.setString(1, dto.getContent());
+			pst.setString(2, dto.getWriter());
+			pst.setString(3, dto.getGps());
+			pst.setString(4, dto.getAddr());
+			pst.setString(5, dto.getTime());
+			pst.setInt(6, dto.getState());
+			pst.setInt(7, dto.getNum());
 			
 			int cnt = pst.executeUpdate();
 
@@ -157,7 +136,6 @@ public class ProblemDAO {
 	}
 
 	public int top() {
-		ArrayList<ProblemDTO> list = new ArrayList<ProblemDTO>();
 		try {
 			getCon();
 

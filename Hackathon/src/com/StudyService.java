@@ -1,7 +1,6 @@
 package com;
 
 import java.io.IOException;
-import java.util.HashMap;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -40,7 +39,7 @@ public class StudyService extends HttpServlet {
 			map.addProperty("writer", "오대근");
 			map.addProperty("src", "./upload/" + fileName);
 		}
-		
+		System.out.println(map);
 		response.getWriter().println(map);
 	}
 

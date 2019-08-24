@@ -41,6 +41,17 @@ public class ProblemDTO {
 		this.src = src;
 	}
 
+	public ProblemDTO(int num, String content, String writer, String gps, String addr, String time, int state) {
+		super();
+		this.num = num;
+		this.content = content;
+		this.writer = writer;
+		this.gps = gps;
+		this.addr = addr;
+		this.time = time;
+		this.state = state;
+	}
+
 	public int getNum() {
 		return num;
 	}
@@ -127,8 +138,17 @@ public class ProblemDTO {
 
 	@Override
 	public String toString() {
-		return "ProblemDTO [num=" + num + ", content=" + content + ", writer=" + writer + ", machine=" + machine
-				+ ", gps=" + gps + ", addr=" + addr + ", time=" + time + ", src=" + src + ", state=" + state + "]";
+		String result = "";
+		result += "{\"num\" : \"" + num + "\",";
+		result += "\"content\" : \"" + content + "\",";
+		result += "\"writer\" : \"" + writer + "\",";
+		result += "\"machine\" : \"" + machine + "\",";
+		result += "\"gps\" : \"" + gps + "\",";
+		result += "\"addr\" : \"" + addr + "\",";
+		result += "\"time\" : \"" + time + "\",";
+		result += "\"src\" : \"" + src + "\",";
+		result += "\"state\" : \"" + state + "\"}";
+		return result;
 	}
 
 }

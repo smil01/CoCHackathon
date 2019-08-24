@@ -1,3 +1,5 @@
+<%@page import="com.ProblemDTO"%>
+<%@page import="java.util.ArrayList"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
@@ -24,6 +26,7 @@
 
   <!-- Theme CSS - Includes Bootstrap -->
   <link href="css/creative.min.css" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="./css/scroll.css" />
   <style type="text/css">
   	.table h5{
   		color: white;
@@ -43,6 +46,12 @@
 		color: white;
 	}
 	#services tr:hover{
+		background-color: #FF8200;
+	}
+	.modal-footer button{
+		background-color: #cccccc;
+	}
+	.modal-footer button:hover{
 		background-color: #FF8200;
 	}
   </style>
@@ -106,9 +115,10 @@
 						    <option value="0">불법주차</option>
 						    <option value="1">인도파손</option>
 						    <option value="2">불법쓰레기</option>
-						    <option value="3">구분하기힘듬</option>
+						    <option value="3">미확인</option>
 						</select>
-						<input style="display: none;" type="file" id="camera" name="camera" capture="camera" accept="image/*" />
+						<input style="display: none;" type="file" id="camera" name="camera" accept="image/*" />
+						<!-- <input style="display: none;" type="file" id="camera" name="camera" capture="camera" accept="image/*" /> -->
 	          		</td>
 	          	</tr>
 	          	<tr>
@@ -171,7 +181,7 @@
           <table class="table" id="off_table">
           	<tr>
           		<td>
-          			<a id="img_link3" class="btn btn-light btn-xl js-scroll-trigger" href="#about">AI카메라 활성화</a>
+          			<a id="img_link3" class="btn btn-light btn-xl js-scroll-trigger" href="#about"><img src="./img/logo0.png" width="35px" height="35px"> AI카메라 활성화</a>
           		</td>
           	</tr>
           </table>
@@ -223,7 +233,7 @@
   <!-- Call to Action Section -->
   <section class="page-section bg-dark text-white" id="services">
     <div class="container text-center">
-      <h2 class="mb-4">민원현황을 확인해보세요!</h2>
+      <h2 class="mb-4"><img src="./img/logo1.png" width="30px" height="50px"> 민원현황 확인</h2>
 		<table class="table">
 			<tr>
 				<th>번호</th>
@@ -231,12 +241,12 @@
 				<th>내용</th>
 				<th>구분</th>
 			</tr>
-			<c:forEach var="dto" items="${list}">
+			<c:forEach var="dto" items="${list}" varStatus="status">
 				<tr>
-					<td><a href="#">${dto.num}</a></td>
-					<td><a href="#">${dto.writer}</a></td>
-					<td><a href="#">${dto.content == "0" ? "불법주차" : dto.content == "1" ? "인도파손" : dto.content == "2" ? "불법쓰레기" : "구분하기힘듬"}</a></td>
-					<td><a href="#">${dto.state == 0 ? "접수중" : dto.state == 1 ? "처리중" : "완료"}</a></td>
+					<td><a href="#services" onclick="showModal(${status.count-1})">${dto.num}</a></td>
+					<td><a href="#services" onclick="showModal(${status.count-1})">${dto.writer}</a></td>
+					<td><a href="#services" onclick="showModal(${status.count-1})">${dto.content == "0" ? "불법주차" : dto.content == "1" ? "인도파손" : dto.content == "2" ? "불법쓰레기" : "미확인"}</a></td>
+					<td><a href="#services" onclick="showModal(${status.count-1})">${dto.state == 0 ? "접수중" : dto.state == 1 ? "처리중" : "완료"}</a></td>
 				</tr>
 			</c:forEach>
 		</table>
@@ -263,8 +273,14 @@
   <script src="js/creative.min.js"></script>
   <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=c3d6d27cf94f7191b731054546ed89d6&libraries=services"></script>
 <script type="text/javascript">
+var list = new Array;
 $('document').ready(function(){
-	/* 필요함수 */
+	/* 필요함수 및 인스턴스 */
+	<% ArrayList<ProblemDTO> list = (ArrayList<ProblemDTO>)request.getAttribute("list");%>
+	<%if(list!=null)for(int i = 0; i < list.size(); i++) {%>
+		list[<%=i%>] = <%=list.get(i)%>;
+	<%}%>
+   var DebugPoint = "브라우저 개발자 디버그 모드용(지워도됨)";
    function cameraClick() {
       if($('#on_table').css("display") != "table"){
          $('#camera').click();
@@ -274,7 +290,12 @@ $('document').ready(function(){
    /* 초기화 */
    if("${msg}" != "null" && "${msg}" != "") {
 	   alert("${msg}");
-   } <%session.removeAttribute("msg");%>
+	   <%session.removeAttribute("msg");%>
+   } 
+   if("${link}" != "null" && "${link}" != "") {
+	   document.location.href = "${link}";
+	   <%session.removeAttribute("link");%>
+   } 
 
    $('#img_link1').click(function() {
 	   cameraClick();
@@ -341,24 +362,151 @@ $('document').ready(function(){
 </script>
 
   <!-- Modal -->
+  <form id="target2" method="post" action="/UpdateService">
   <div class="modal" id="myModal" role="dialog">
     <div class="modal-dialog">
     
       <!-- Modal content-->
       <div class="modal-content">
         <div class="modal-header">
-          <h4 class="modal-title">Modal Header</h4>
+          <h4 class="modal-title" id="modal_title"></h4>
+          <input type="text" id="modal_num" name="modal_num" style="display: none;">
 		  <button type="button" class="close" data-dismiss="modal">×</button>
         </div>
         <div class="modal-body">
-          <p>Some text in the modal.</p>
+	          <table class="table" id="modal_table">
+	          	<tr>
+	          		<td width="40%">
+	          			<p class="text-muted mb-0" align="center">상태</p>
+	          		</td>
+	          		<td width="60%">
+						<select class="was-validated custom-select" id="modal_state" name="modal_state">
+						    <option value="0">접수중</option>
+						    <option value="1">처리중</option>
+						    <option value="2">완료</option>
+						</select>
+	          		</td>
+	          	</tr>
+	          	<tr>
+	          		<td>
+	          			<p class="text-muted mb-0" align="center">내용</p>
+	          		</td>
+	          		<td>
+						<select class="was-validated custom-select" id="modal_content" name="modal_content">
+						    <option value="">민원선택</option>
+						    <option value="0">불법주차</option>
+						    <option value="1">인도파손</option>
+						    <option value="2">불법쓰레기</option>
+						    <option value="3">미확인</option>
+						</select>
+	          		</td>
+	          	</tr>
+	          	<tr>
+	          		<td>
+	          			<p class="text-muted mb-0" align="center">이름</p>
+	          		</td>
+	          		<td>
+	          			 <input type="text" id="modal_writer" name="modal_writer">
+	          		</td>
+	          	</tr>
+	          	<tr>
+	          		<td>
+	          			<p class="text-muted mb-0" align="center">기기</p>
+	          		</td>
+	          		<td>
+	          			 <input type="text" id="modal_machine" name="imodal_machine">
+	          		</td>
+	          	</tr>
+	          	<tr>
+	          		<td>
+	          			<p class="text-muted mb-0" align="center">GPS</p>
+	          		</td>
+	          		<td>
+	          			<input type="text" id="modal_gps" name="modal_gps">
+	          		</td>
+	          	</tr>
+	          	<tr>
+	          		<td>
+	          			<p class="text-muted mb-0" align="center">위치</p>
+	          		</td>
+	          		<td>
+	          			<input type="text" id="modal_addr" name="modal_addr">
+	          		</td>
+	          	</tr>
+	          	<tr>
+	          		<td>
+	          			<p class="text-muted mb-0" align="center">시간</p>
+	          		</td>
+	          		<td>
+	          			 <input type="text" id="modal_time" name="modal_time">
+	          		</td>
+	          	</tr>
+	          	<tr>
+	          		<td>
+	          			 <p class="text-muted mb-0" align="center">사진</p>
+	          		</td>
+	          		<td align="left">
+	          			 <img id="modal_img" height=200 width="100%" style="border-radius: 8px;">
+	          			 <input type="text" id="modal_src" name="modal_src" style="display: none;">
+	          		</td>
+	          	</tr>
+	          	<tr>
+	          		<td>
+	          			 <p class="text-muted mb-0" align="center">지도</p>
+	          		</td>
+	          		<td align="left">
+	          			 <div id="map" style="width:100%;height:200px;"></div>
+	          		</td>
+	          	</tr>
+	          </table>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-default">수정</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">닫기</button>
         </div>
       </div>
       
     </div>
   </div>
+  </form>
+  <script type="text/javascript">
+  	function showModal(i) {
+    	var obj = list[i];
+		var x = obj.gps.split(',')[0].trim();
+		var y = obj.gps.split(',')[1].trim();
+    	
+		$("#modal_state").val(obj.state).prop("selected", true);
+    	$("#modal_title").html("<img src='./img/logo2.png' width='30px' height='30px'> 민원번호 : " + obj.num);
+		$("#modal_num").val(obj.num);
+		$("#modal_content").val(obj.content).prop("selected", true);
+		$('#modal_writer').val(obj.writer);
+		$('#modal_machine').val(obj.machine);
+		$('#modal_gps').val(obj.gps);
+		$('#modal_addr').val(obj.addr);
+		$('#modal_time').val(obj.time);
+		$("#modal_img").attr("src", obj.src);
+		$('#modal_src').val(obj.src);
+    	
+  		$('#myModal').modal('show');
+  		
+  		var mapContainer = document.getElementById('map'), // 지도를 표시할 div 
+	    mapOption = { 
+	        center: new kakao.maps.LatLng(x, y), // 지도의 중심좌표
+	        level: 3 // 지도의 확대 레벨
+	    };
+	
+		var map = new kakao.maps.Map(mapContainer, mapOption); // 지도를 생성합니다
+		
+		// 마커가 표시될 위치입니다 
+		var markerPosition  = new kakao.maps.LatLng(x, y); 
+		
+		// 마커를 생성합니다
+		var marker = new kakao.maps.Marker({
+		    position: markerPosition
+		});
+		
+		marker.setMap(map);
+	}
+  </script>
 </body>
 </html>
