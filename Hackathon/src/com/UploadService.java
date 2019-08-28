@@ -17,6 +17,7 @@ public class UploadService extends HttpServlet {
 	protected void service(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		request.setCharacterEncoding("UTF-8");
+		response.setCharacterEncoding("UTF-8");
 
 		String content = request.getParameter("img_content");
 		String writer = request.getParameter("img_writer");

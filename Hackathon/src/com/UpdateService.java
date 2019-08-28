@@ -32,7 +32,7 @@ public class UpdateService extends HttpServlet {
 		if(ProblemDAO.getDao().update(new ProblemDTO(num, content, writer, gps, addr, time, state))) {
 			if(state == 2) {
 				//////////////////딥러닝 재학습부///////////////////
-				AI_ReStudy_Server_To.setReStudy(src.replace("./upload/", ""));
+				AI_ReStudy_Server_To.setReStudy(src.replace("./upload/", "") + "/" + content);
 			}
 			
 			request.getSession().setAttribute("msg", "접수번호 "+ num + "의 처리가 완료되었습니다.");

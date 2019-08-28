@@ -38,7 +38,7 @@ public class StudyService extends HttpServlet {
 			///////////////////////////////딥러닝자리///////////////////////////////////
 			map.addProperty("content", AI_Classification_Server_To.getClassification(fileName));
 			////////////////////////////////////////////////////////////////////////
-			map.addProperty("writer", "오대근");
+			map.addProperty("writer", ((UserDTO)request.getSession().getAttribute("user")).getUserInfo());
 			map.addProperty("src", "./upload/" + fileName);
 		}
 		System.out.println("restAPI 작동 결과 : " + map);

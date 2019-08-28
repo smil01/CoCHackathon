@@ -19,6 +19,12 @@ public class MainService extends HttpServlet {
 	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {		
 		RequestDispatcher dispatcher = request.getRequestDispatcher("main.jsp");
 		request.setAttribute("list", ProblemDAO.getDao().selectAll());
+		
+		UserDTO user = (UserDTO)request.getSession().getAttribute("user");
+		if(user == null) {
+			request.getSession().setAttribute("user", new UserDTO("홍길동", "010-7500-0000", "testUser", "test123", "test@daum.net"));
+		}
+		
 		dispatcher.forward(request, response);
 	}
 }

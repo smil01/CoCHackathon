@@ -69,10 +69,16 @@
       <div class="collapse navbar-collapse" id="navbarResponsive">
         <ul class="navbar-nav ml-auto my-2 my-lg-0">
           <li class="nav-item">
+            <a class="nav-link js-scroll-trigger" href="#top">Top</a>
+          </li>
+          <li class="nav-item">
             <a class="nav-link js-scroll-trigger" href="#about" id="img_link1">AI 민원신청</a>
           </li>
           <li class="nav-item">
             <a class="nav-link js-scroll-trigger" href="#services">민원조회</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link js-scroll-trigger" data-toggle="modal" href="#" id="myModal2_a" onclick="showModal2()">사용자정보</a>
           </li>
         </ul>
       </div>
@@ -81,7 +87,7 @@
 
   <!-- Masthead -->
   <header class="masthead">
-    <div class="container h-100">
+    <div class="container h-100" id="top">
       <div class="row h-100 align-items-center justify-content-center text-center">
         <div class="col-lg-10 align-self-end">
           <h1 class="text-uppercase text-white font-weight-bold">AI 원 클 릭<br>민 원 처 리</h1>
@@ -102,7 +108,7 @@
         <div class="col-lg-8 text-center">
           <h2 class="text-white mt-0">AI 민 원 신 청 서</h2>
           <hr class="divider light my-4">
-          <p class="text-white-50 mb-4">신청전 주의사항 : 민원보내기 버튼을 클릭전에 민원분류가 잘 되었는지 확인하여 주시기 바랍니다.</p>
+          <p class="text-white-50 mb-4">신청전 필독 : 민원이 올바르게 분류되지 않았다면 민원내용을 바꾸실 수 있습니다.</p>
           <form id="target" method="post" enctype="multipart/form-data">
 	          <table class="table" id="on_table" style="display: none;">
 	          	<tr>
@@ -117,13 +123,13 @@
 						    <option value="2">불법쓰레기</option>
 						    <option value="3">미확인</option>
 						</select>
-						<input style="display: none;" type="file" id="camera" name="camera" accept="image/*" />
-						<!-- <input style="display: none;" type="file" id="camera" name="camera" capture="camera" accept="image/*" /> -->
+						<!-- <input style="display: none;" type="file" id="camera" name="camera" accept="image/*" /> -->
+						<input style="display: none;" type="file" id="camera" name="camera" capture="camera" accept="image/*" />
 	          		</td>
 	          	</tr>
 	          	<tr>
 	          		<td>
-	          			<h5>작성자</h5>
+	          			<h5>작성자 / 연락처</h5>
 	          		</td>
 	          		<td>
 	          			 <input type="text" id="img_writer" name="img_writer">
@@ -237,7 +243,7 @@
 		<table class="table">
 			<tr>
 				<th>번호</th>
-				<th>이름</th>
+				<th>이름 / 연락처</th>
 				<th>내용</th>
 				<th>구분</th>
 			</tr>
@@ -288,6 +294,8 @@ $('document').ready(function(){
    }
    
    /* 초기화 */
+   $('#myModal2_a').css("color","rgba(255, 255, 255, 0.7)");
+   
    if("${msg}" != "null" && "${msg}" != "") {
 	   alert("${msg}");
 	   <%session.removeAttribute("msg");%>
@@ -507,6 +515,83 @@ $('document').ready(function(){
 		
 		marker.setMap(map);
 	}
+  </script>
+  
+  
+  <!-- Modal -->
+  <form id="target3" method="post" action="/UserService">
+  <div class="modal" id="myModal2" role="dialog">
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title" id="modal_title">사용자정보 수정</h4>
+		  <button type="button" class="close" onclick="close2()">×</button>
+        </div>
+        <div class="modal-body">
+	          <table class="table" id="modal_table">
+	          	<tr>
+	          		<td>
+	          			<p class="text-muted mb-0" align="center">이름</p>
+	          		</td>
+	          		<td>
+	          			 <input type="text" id="modal2_name" name="modal2_name" value="${user.name}">
+	          		</td>
+	          	</tr>
+	          	<tr>
+	          		<td>
+	          			<p class="text-muted mb-0" align="center">전화번호</p>
+	          		</td>
+	          		<td>
+	          			 <input type="text" id="modal2_number" name="modal2_number" value="${user.number}">
+	          		</td>
+	          	</tr>
+	          	<tr>
+	          		<td>
+	          			<p class="text-muted mb-0" align="center">아이디</p>
+	          		</td>
+	          		<td>
+	          			<input type="text" id="modal2_id" name="modal2_id" value="${user.id}">
+	          		</td>
+	          	</tr>
+	          	<tr>
+	          		<td>
+	          			<p class="text-muted mb-0" align="center">비밀번호</p>
+	          		</td>
+	          		<td>
+	          			<input type="password" id="modal2_pw" name="modal2_pw" value="${user.pw}">
+	          		</td>
+	          	</tr>
+	          	<tr>
+	          		<td>
+	          			<p class="text-muted mb-0" align="center">email</p>
+	          		</td>
+	          		<td>
+	          			 <input type="email" id="modal_email" name="modal_email" value="${user.email}">
+	          		</td>
+	          	</tr>
+	          </table>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-default">수정</button>
+          <button type="button" class="btn btn-default" onclick="close2()">닫기</button>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+  </form>
+  <script type="text/javascript">
+  	function showModal2() {
+  		 $('#myModal2_a').css("color","#f4623a");
+ 		 $('#myModal2').modal('show');
+  	}
+  	
+  	function close2() {
+ 		 $('#myModal2_a').css("color","rgba(255, 255, 255, 0.7)");
+ 		 $('#myModal2').modal("hide");
+ 	}
   </script>
 </body>
 </html>
